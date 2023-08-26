@@ -23,7 +23,7 @@ public class SudokuSolver{
         gridSize = size;
         grid = new int[gridSize][gridSize][gridSize];
         //initialize the checker to help with vert/horiz checks and the final grid
-        initValChecker = passedGrid;
+        initValChecker = passedGrid.clone();
         finalGrid = passedGrid;
         for(int row = 0; row < gridSize; row++){
             for(int col = 0; col < gridSize; col++){
@@ -71,11 +71,6 @@ public class SudokuSolver{
             }
             for(int r = 0; r < gridSize; r++){
                 for(int c = 0; c < gridSize; c++){
-                    /*
-                    if(r == 8 && c == 1)
-                        System.out.println("got here");
-
-                     */
                     this.valChecker(r, c);
                 }
             }
@@ -92,18 +87,28 @@ public class SudokuSolver{
             return;
         for(int val : grid[rowIdx][colIdx]){
             if(val != 0){
-                check = this.checkHorizontal(rowIdx, colIdx, val, 1) || this.checkVertical(colIdx, rowIdx, val, 1) || this.checkSqGrid(rowIdx, colIdx, val, 1);
+                check = this.checkHorizontal(rowIdx, colIdx, val, 1) || this.checkVertical(colIdx, rowIdx, val, 1) || this.checkSqGrid(rowIdx, colIdx, val, 1) || checkSmallSquare(rowIdx, colIdx, val);
                 if(check){
-
                     finalGrid[rowIdx][colIdx] = val;
                     for(int i = 0; i < gridSize; i++){
-                        if(i != val)
+                        if(i + 1 != val)
                             grid[rowIdx][colIdx][i] = 0;
                     }
                     break;
                 }
             }
         }
+    }
+
+
+    //Checking function to see if there is only one choice in the selected square
+    private boolean checkSmallSquare(int rowIdx, int colIdx, int val){
+        int count = 1;
+        for(int valCheck : grid[rowIdx][colIdx]){
+            if(valCheck != val && valCheck != 0)
+                count += 1;
+        }
+        return count == 1;
     }
 
 
@@ -190,6 +195,19 @@ public class SudokuSolver{
     }
 
 
+    //Debugging function to check the number of -1's in finalGrid
+    private int negChecker(){
+        int retVal = 0;
+        for(int r = 0; r < gridSize; r++){
+            for(int c = 0; c < gridSize; c++){
+                if(finalGrid[r][c] == -1)
+                    retVal += 1;
+            }
+        }
+        return retVal;
+    }
+
+
     //util function to print the sanitized grid.
     public void gridPrinter(){
         for(int row = 0; row < gridSize; row++){
@@ -202,16 +220,17 @@ public class SudokuSolver{
     //util function to print the finalized grid.
     public void finalizedGridPrinter(int[][] finalGrid){
         StringBuilder sb = new StringBuilder();
-        sb.append("[");
+        sb.append("-------------------\n");
         for(int row = 0; row < gridSize; row++){
             for(int col = 0; col < gridSize; col++){
+                sb.append('|');
                 sb.append(finalGrid[row][col]);
-                sb.append(' ');
+
                 if(col == 8)
-                    sb.append('\n');
+                    sb.append("|\n");
             }
         }
-        sb.append(']');
+        sb.append("-------------------");
         System.out.println(sb);
     }
 }
