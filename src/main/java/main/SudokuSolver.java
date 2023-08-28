@@ -220,7 +220,7 @@ public class SudokuSolver{
     //util function to print the finalized grid.
     public void finalizedGridPrinter(int[][] finalGrid){
         StringBuilder sb = new StringBuilder();
-        sb.append("-------------------\n");
+        sb.append("<----------------->\n");
         for(int row = 0; row < gridSize; row++){
             for(int col = 0; col < gridSize; col++){
                 sb.append('|');
@@ -230,7 +230,7 @@ public class SudokuSolver{
                     sb.append("|\n");
             }
         }
-        sb.append("-------------------");
+        sb.append("<----------------->");
         System.out.println(sb);
     }
 }
